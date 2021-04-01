@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
-import cv2
 import os
 import tifffile
 from ndvi import make_ndvi
@@ -40,16 +39,19 @@ def make_save_subimages(raster_before_path,raster_after_path,im_path_1,im_path_2
         b = np.random.randint(0,size) 
         
         cut_mask = mask[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
+        
         cut_ndvi_after = ndvi_after[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
         cut_ndvi_before = ndvi_before[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
-        
+        mean_NIR = (raster_before[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b,1] + raster_after[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b,1])/2
+
+        final_raster = np.dstack((cut_ndvi_before,cut_ndvi_after,mean_NIR))
         image_cut_mask = Image.fromarray(cut_mask*255)
         if (cut_ndvi_after== 0).sum() != 0:
             continue
         
         if os.path.isdir(out_path + str(i)) == False:
             os.mkdir(out_path + str(i))
-            tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_ndvi_after,planarconfig = 'contig')
+            tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',final_raster,planarconfig = 'contig')
             image_cut_mask.save(out_path+str(i)+'/Mask_' + str(i)+'.png')
         else:
             #tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_raster_after,planarconfig = 'contig')
