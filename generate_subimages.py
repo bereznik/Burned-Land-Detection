@@ -4,8 +4,9 @@ from PIL import Image
 import cv2
 import os
 import tifffile
-
-def make_save_subimages(image_array_path,im_path_1,im_path_2,out_path,n):
+from ndvi import make_ndvi
+np.seterr(divide='ignore', invalid='ignore')
+def make_save_subimages(raster_before_path,raster_after_path,im_path_1,im_path_2,out_path,n):
     ''' im_array_path: path to numpy array representing the Geotif Image
         im_path_1: path to binary mask containing class 1 (forest)
         im_path_2: path to binary mask containing class 2 (field)
@@ -14,8 +15,12 @@ def make_save_subimages(image_array_path,im_path_1,im_path_2,out_path,n):
 
     Generates sub images form binary mask randomly but containing for sure target pixels
     '''
-    raster = np.load(image_array_path) #reads numpy array from memory
-    im1 = plt.imread(im_path_1) #reads binary masks as numpy array
+    #loading rasters
+    raster_before = np.load(raster_before_path)
+    raster_after = np.load(raster_after_path)
+    
+    #loading masks
+    im1 = plt.imread(im_path_1)
     im2 = plt.imread(im_path_2)
     
     im2[np.where(im2!=0)] = 128 # transforms the pixels of the second binary mask to other value to succesfully sum the masks into one
@@ -26,22 +31,27 @@ def make_save_subimages(image_array_path,im_path_1,im_path_2,out_path,n):
     index = np.random.choice(ar1,n) # find the pixles of the image where there are burnt areas and chooses n random ones
     c = ar1[index]
     d = ar2[index]
-    
+
+    ndvi_before,ndvi_after = make_ndvi(raster_before,raster_after)    
+
     size = 256
     for i in range(0,n):
         a = np.random.randint(0,size) # generates random numbers to shift the image
         b = np.random.randint(0,size) 
-        cut_mask = mask[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
-        cut_raster = raster[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b,0:4]
-        image_cut_mask = Image.fromarray(cut_mask*255)
         
-        if (cut_raster == 0).sum() != 0:
+        cut_mask = mask[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
+        cut_ndvi_after = ndvi_after[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
+        cut_ndvi_before = ndvi_before[c[i]-a:c[i]+size-a,d[i]-b:d[i]+size-b]
+        
+        image_cut_mask = Image.fromarray(cut_mask*255)
+        if (cut_ndvi_after== 0).sum() != 0:
             continue
         
         if os.path.isdir(out_path + str(i)) == False:
             os.mkdir(out_path + str(i))
-            tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_raster,planarconfig = 'contig')
+            tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_ndvi_after,planarconfig = 'contig')
             image_cut_mask.save(out_path+str(i)+'/Mask_' + str(i)+'.png')
         else:
-            tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_raster,planarconfig = 'contig')
+            #tifffile.imsave(out_path+str(i)+'/Raster_'+str(i)+'.tiff',cut_raster_after,planarconfig = 'contig')
             image_cut_mask.save(out_path+str(i)+'/Mask_' + str(i)+'.png')
+            ndvi_cut.save(out_path+str(i)+'/Raster_'+str(i)+'.png') 
