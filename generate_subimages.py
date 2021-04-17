@@ -33,7 +33,6 @@ def make_save_subimages(raster_before_path,raster_after_path,im_path_1,im_path_2
     size = 256
     for i in range(0,n):
         ar1,ar2 = np.where(mask!=0)
-        print(ar1.shape)
         index = np.random.choice(ar1,n) # find the pixles of the image where there are burnt areas and chooses n random ones
         c = ar1[index]
         d = ar2[index]
