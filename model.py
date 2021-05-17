@@ -186,3 +186,7 @@ def multi_unet_model(n_classes=3, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=3)
     print(model.summary())
     
     return model
+
+
+
+    
