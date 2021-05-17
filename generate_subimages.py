@@ -89,3 +89,4 @@ def make_save_subimages(raster_before_path,raster_after_path,im_path_1,im_path_2
         mask[used_pixels_array_x,used_pixels_array_y] = 0
     
     #change_names()
+
