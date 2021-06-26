@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import colors
 from sklearn.metrics import confusion_matrix
 
 class Metrics:
@@ -35,10 +36,19 @@ class Metrics:
         self.FN = sum
 
         self.accuracy = (self.TP + self.TN)/(self.TP + self.TN + self.FP + self.FN + 1e-10)
-        self.precision = (self.TP)/(self.TP+self.FP + 1e-6)
-        self.recall = (self.TP)/(self.TP + self.FN +1e-6)
+        self.precision = (self.TP)/(self.TP+self.FP + 1e-10)
+        self.recall = (self.TP)/(self.TP + self.FN +1e-10)
 
 def model_evaluation(model,x_test,y_test,k):
+    '''
+    Evaluates the current model
+    -------
+    params: model -> an instance of a Model object representing the network
+            x_test -> validation input data
+            y_test -> validation output data
+            k -> class to output predictions (0 = not burned land, 1 = forest burned land, 2 = pasture b
+            urned land)
+    '''
     y_pred = model.predict(x_test)
     y_pred = np.argmax(y_pred,axis=3)
     y_true = np.argmax(y_test, axis = 3)
@@ -59,3 +69,10 @@ def model_evaluation(model,x_test,y_test,k):
     
     scores = dict({'Accuracy':scores_accuracy/j,'Precision':scores_precision/j,'Recall':scores_recall/j,'F1':2*(scores_precision/j)*(scores_recall/j)/(scores_recall/j + scores_precision/j)})
     return scores
+
+def compare_masks(y_pred,y_true,n):
+    fig, ax = plt.subplots(1,2)
+    cmap = colors.ListedColormap(['black','#036A14','#27D644'])
+    ax[0].imshow(y_pred[n],cmap=cmap)
+    ax[1].imshow(y_true[n],cmap=cmap)
+    
