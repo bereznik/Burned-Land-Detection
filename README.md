@@ -2,9 +2,15 @@
 
 Repo containing code from research on Convolution Neural Networks on detection of cover and type of burned land areas in the Amazon Rainforest.
 
-The following confusion matrix shows the metrics of the model for each class:
 
-![confusionMatrix](https://user-images.githubusercontent.com/63306096/134178063-8c822ea0-2796-4bf7-acf6-72b0b93e7e94.png)
+The following table shows the metrics of the model for each class:
+
+| Class      | Accuracy | Precision | Recall   | F1       |
+|------------|----------|-----------|----------|----------|
+| Not Burned | 0.931086 | 0.976243  | 0.934025 | 0.954668 |
+| Forest     | 0.984059 | 0.842559  | 0.740085 | 0.788004 |
+| Pasture    | 0.925765 | 0.745628  | 0.902305 | 0.816518 |
+
 
 Some examples of the output from the CNN (True mask on left and predicted on right side): 
 
