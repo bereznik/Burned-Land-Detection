@@ -32,19 +32,28 @@ def load_masks(mask_path):
     mask_list = np.array(mask_list)
     return mask_list
 
-def z_norm(arr, epsilon=1e-100):
+def z_norm(arr, epsilon=1e-10):
     return (arr-arr.mean())/(arr.std()+epsilon)  
 
-def normalization(images_array):
-    images_array[:,:,:,2] = (images_array[:,:,:,2]/10000) #values are from 0 to 1000, so we can just divide by 1000 to normalize
-    for i in range(0,3):
-        images_array[:,:,:,i] = z_norm(images_array[:,:,:,i])
-    images_array = images_array.astype(np.float32)
+def normalization(images_array,mode):
+    
+    if mode == 'train':
+        images_array[:,:,:,2] = (images_array[:,:,:,2]/10000) #values are from 0 to 1000, so we can just divide by 1000 to normalize
+        for i in range(0,3):
+            images_array[:,:,:,i] = z_norm(images_array[:,:,:,i])
+        images_array = images_array.astype(np.float32)
+    
+    if mode == 'generalization':
+        images_array[:,:,2] = images_array[:,:,2]
+        for i in range(0,3):
+            images_array[:,:,i] = z_norm(images_array[:,:,i])
+        images_array = images_array.astype(np.float32)
     return images_array
 
 def change_mask_classes(masks_array):
     masks_array[masks_array == 254] = 1
     masks_array[masks_array == 127] = 2
+    masks_array[masks_array == 125] = 2
     return masks_array
 
 def visualize(image, mask, original_image=None, original_mask=None):
