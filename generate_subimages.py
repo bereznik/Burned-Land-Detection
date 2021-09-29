@@ -6,6 +6,7 @@ import tifffile
 from ndvi import make_ndvi
 import rasterio
 np.seterr(divide='ignore', invalid='ignore')
+import cv2
 
 def change_names():
     image_path = '../Binary Masks/Cortes/Images'
@@ -89,4 +90,28 @@ def make_save_subimages(raster_before_path,raster_after_path,im_path_1,im_path_2
         mask[used_pixels_array_x,used_pixels_array_y] = 0
     
     #change_names()
+
+def reshape_split(image,kernel_size=(256,256)):
+    img_height,img_width, channels = image.shape
+    tile_height,tile_width = kernel_size
+
+    tiled_array = image.reshape(img_height // tile_height,
+                                tile_height,
+                                img_width // tile_width,
+                                tile_width,
+                                channels)
+    tiled_array = tiled_array.swapaxes(1,2)
+    return tiled_array
+
+def concatenate_splited_image(image):
+    n_lines = image.shape[0]
+    n_columns = image.shape[1]
+    horizontal_concat = []
+    for i in range(0,n_lines):
+        horizontal_concat.append(cv2.hconcat([image[i,x] for x in range(0,n_columns)]))
+    
+    final_image = cv2.vconcat([img for img in horizontal_concat])
+    return final_image
+
+
 
