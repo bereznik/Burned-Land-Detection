@@ -1,6 +1,6 @@
 # Burned-Land-Detection
 
-Repo containing code from research on Convolution Neural Networks on detection of cover and type of burned land areas in the Amazon Rainforest.
+Repo containing code from research on Convolution Neural Networks on detection of extent and origin of burned land areas in the Amazon Rainforest.
 
 In this project, a model based on the U-net architecture was trained for semantic segmentation. From 2 images of an area, one prior and one post some events of fire, we wish to generate a mask with 3 classes: Non burned areas (black pixels on the mask), Burned areas that were from a forest area prior to the fire (dark green pixels on the mask) and burned areas that were pasture prior to the fire (light green pixels on the mask)   
 
