@@ -2,6 +2,7 @@
 
 Repo containing code from research on Convolution Neural Networks on detection of cover and type of burned land areas in the Amazon Rainforest.
 
+In this project, a model based on the U-net architecture was trained for semantic segmentation. From 2 images of an area, one prior and one post some events of fire, we wish to generate a mask with 3 classes: Non burned areas (black pixels on the mask), Burned areas that were from a forest area prior to the fire (dark green pixels on the mask) and burned areas that were pasture prior to the fire (light green pixels on the mask)   
 
 The following table shows the metrics of the model for each class:
 
@@ -10,6 +11,8 @@ The following table shows the metrics of the model for each class:
 | Not Burned | 0.931086 | 0.976243  | 0.934025 | 0.954668 |
 | Forest     | 0.984059 | 0.842559  | 0.740085 | 0.788004 |
 | Pasture    | 0.925765 | 0.745628  | 0.902305 | 0.816518 |
+
+
 
 
 Some examples of the output from the CNN (True mask on left and predicted on right side): 
