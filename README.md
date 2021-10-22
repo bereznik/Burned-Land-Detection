@@ -25,3 +25,13 @@ Example of input and output expected from the neural net:
 ![prediction](https://user-images.githubusercontent.com/63306096/135854424-e195cda2-551c-4426-9764-5ba75193be44.png)
 |:--:| 
 | *Output: Mask generated from both images above, representing the extent and origin of all burned lands presented in the image post the set of fires.* |
+
+## How to Run
+
+Open a terminal and enter:
+
+```
+python get_prediction.py [path_raster_before_fires] [path_raster_after_fires] [resulting_mask_name]
+
+```
+Don't forget to include the extension in resulting_mask_name (e.g final_mask.png ). Note that both rasters need to have the same dimensions in order for the code to work.
