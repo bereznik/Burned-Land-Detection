@@ -18,7 +18,7 @@ class Metrics:
     '''
     def __init__(self,conf,k):
         self.TP = conf[k,k]
-        
+
         sum = 0
         for i in range(0,len(conf)):
             if i == k:
@@ -64,27 +64,21 @@ def model_evaluation(model,x_test,y_test,k):
     y_pred = model.predict(x_test)
     y_pred = np.argmax(y_pred,axis=3)
     y_true = np.argmax(y_test, axis = 3)
+
     j = 0
+
     scores_accuracy = 0
     scores_precision = 0
     scores_recall = 0
+
     confi = confusion_matrix(y_true.flatten(),y_pred.flatten(),labels=[0,1,2])
     metricsi = Metrics(confi,k)
-    # for i in range(0,len(y_test)):
-    #     conf = confusion_matrix(y_true[i].flatten(),y_pred[i].flatten(),labels=[0,1,2])
-    #     metrics = Metrics(conf,k)
-       
-    #     if (metrics.precision == 0)|(metrics.recall ==0):
-    #         continue
-    #     j= j+1
-    #     scores_precision = scores_precision + metrics.precision
-    #     scores_recall = scores_recall + metrics.recall
-    #     scores_accuracy = scores_accuracy + metrics.accuracy
+
     scores_precision = metricsi.precision
     scores_recall = metricsi.recall
     scores_accuracy = metricsi.accuracy
 
-    # scores = dict({'Accuracy':scores_accuracy/j,'Precision':scores_precision/j,'Recall':scores_recall/j,'F1':2*(scores_precision/j)*(scores_recall/j)/(scores_recall/j + scores_precision/j)})
+
     scores = dict({'Accuracy':scores_accuracy,'Precision':scores_precision,'Recall':scores_recall,'F1':2*(scores_precision)*(scores_recall)/(scores_recall + scores_precision)})
     return scores
 
@@ -94,7 +88,7 @@ def compare_masks(y_pred,y_true,n):
     ax[0].imshow(y_pred[n],cmap=cmap)
     ax[1].imshow(y_true[n],cmap=cmap)
     # Hide grid lines
-    
+
     ax[0].grid(False)
     ax[1].grid(False)
 
@@ -126,7 +120,6 @@ def get_final_image_from_raster(path_raster_before,path_raster_after):
     array_after = get_array_from_raster(path_raster_after)
     ndvi_before,ndvi_after = make_ndvi(array_before,array_after)
     mean_NIR = (array_before[:,:,1] + array_after[:,:,1])/2
-    print('ndvi shape ->', ndvi_before.shape, 'mean_NIR shape ->',mean_NIR.shape)
     final_image = np.dstack((ndvi_before,ndvi_after,mean_NIR))
     return final_image
 
@@ -138,7 +131,7 @@ def convert_NIR_band_to_gray(image):
 
 
 def get_rotated_croped_final_image_from_raster(path_raster_before,path_raster_after):
-    
+
     final_image = get_final_image_from_raster(path_raster_before,path_raster_after)
     gray = convert_NIR_band_to_gray(final_image)
     # binarize image
@@ -156,7 +149,7 @@ def get_rotated_croped_final_image_from_raster(path_raster_before,path_raster_af
 
     # create a rotation matrix and rotate the image
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
-    
+
     rotated_img = cv2.warpAffine(final_image, M, (w, h))
 
     # crop the image
